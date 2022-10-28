@@ -10,7 +10,7 @@ export const bookRouter = router({
       z.object({
         titol: z.string(),
         autor: z.string(),
-        prestatge: z.number(),
+        prestatge: z.string(),
       })
     )
     .mutation(({ ctx, input }) => {
@@ -18,7 +18,7 @@ export const bookRouter = router({
         data: {
           titol: input.titol,
           autor: input.autor,
-          prestatge: input.prestatge,
+          prestatge: parseInt(input.prestatge),
         },
       });
     }),
