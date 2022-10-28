@@ -9,16 +9,23 @@ interface inputBook {
 }
 
 function Modal({ setOpenModal }: { setOpenModal: (value: boolean) => void }) {
+  const [error, setError] = React.useState<string>("");
   const [input, setInput] = React.useState<inputBook>({
     titol: "",
     autor: "",
     prestatge: "",
   });
 
-  const { mutate: createBook } = trpc.book.insertBook.useMutation();
+  const { mutate: createBook } = trpc.book.insertBook.useMutation({
+    onSuccess: () => setOpenModal(false),
+    onError: (error) => setError(error.message),
+  });
+
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
+
+  //TODO: Show error on input
 
   return (
     <div className="absolute inset-0 flex bg-black/75">
@@ -27,6 +34,7 @@ function Modal({ setOpenModal }: { setOpenModal: (value: boolean) => void }) {
           <p className="flex items-center text-2xl font-bold">
             Afegeix un nou llibre
           </p>
+          <p>{error}</p>
           <img
             className="h-10 w-10 cursor-pointer"
             onMouseOver={(e) =>
@@ -61,7 +69,7 @@ function Modal({ setOpenModal }: { setOpenModal: (value: boolean) => void }) {
           <label className="font-bold">Prestatge</label>
           <input
             className="rounded border p-1"
-            type="text"
+            type="number"
             name="prestatge"
             onChange={handleInput}
           />
