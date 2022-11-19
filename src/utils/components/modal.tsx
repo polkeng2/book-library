@@ -1,6 +1,6 @@
 import { book } from "@prisma/client";
 import React from "react";
-import { trpc } from "../utils/trpc";
+import { trpc } from "../trpc";
 
 interface inputBook {
   titol: string;
@@ -8,7 +8,13 @@ interface inputBook {
   prestatge: string;
 }
 
-function Modal({ setOpenModal }: { setOpenModal: (value: boolean) => void }) {
+function Modal({
+  setOpenModal,
+  addBookState,
+}: {
+  setOpenModal: (value: boolean) => void;
+  addBookState: (book: book) => void;
+}) {
   const [error, setError] = React.useState<string>("");
   const [input, setInput] = React.useState<inputBook>({
     titol: "",
@@ -16,8 +22,13 @@ function Modal({ setOpenModal }: { setOpenModal: (value: boolean) => void }) {
     prestatge: "",
   });
 
-  const { mutate: createBook } = trpc.book.insertBook.useMutation({
-    onSuccess: () => setOpenModal(false),
+  const { mutate: createBook, isLoading } = trpc.book.insertBook.useMutation({
+    onSuccess: (data) => {
+      if (!isLoading && data) {
+        addBookState(data);
+        setOpenModal(false);
+      }
+    },
     onError: (error) => setError(error.message),
   });
 
@@ -26,15 +37,22 @@ function Modal({ setOpenModal }: { setOpenModal: (value: boolean) => void }) {
   };
 
   //TODO: Show error on input
+  const handleError = () => {
+    if (error) {
+      if (input.titol === "" || input.autor === "" || input.prestatge === "") {
+        return "Falten camps per omplir";
+      }
+    }
+    return "";
+  };
 
   return (
     <div className="absolute inset-0 flex bg-black/75">
-      <div className="gap- m-auto flex w-[30%] flex-col gap-4 rounded bg-white  p-5 ">
+      <div className="m-auto flex w-[30%] flex-col gap-3 rounded bg-white  p-5 ">
         <div className="flex justify-between ">
           <p className="flex items-center text-2xl font-bold">
             Afegeix un nou llibre
           </p>
-          <p>{error}</p>
           <img
             className="h-10 w-10 cursor-pointer"
             onMouseOver={(e) =>
@@ -47,6 +65,7 @@ function Modal({ setOpenModal }: { setOpenModal: (value: boolean) => void }) {
             onClick={() => setOpenModal(false)}
           />
         </div>
+        <p className="text-red-500">{handleError()}</p>
         <div className="flex flex-col">
           <label className="font-bold">Títol</label>
           <input
