@@ -12,6 +12,7 @@ const Home: NextPage = () => {
     onSuccess: (data) => {
       if (data) {
         setBookList(data);
+        console.log(bookList);
       }
     },
   });
@@ -20,23 +21,52 @@ const Home: NextPage = () => {
     setBookList([...bookList, book]);
   };
 
+  const editBookState = (book: book) => {
+    let idBook = bookList.find((b) => b.id === book.id);
+    idBook = book;
+    setBookList([...bookList, book]);
+  };
+
+  const deleteBookState = (book: book) => {
+    const books = bookList.filter((b) => b.id !== book.id);
+    setBookList(books);
+  };
+
   if (isLoading) return <p>Loading...</p>;
 
+  const emptyBook: book = {
+    id: "",
+    titol: "",
+    autor: "",
+    prestatge: "",
+    notes: "",
+  };
+
   return (
-    <div className="flex h-screen w-full flex-col items-center bg-blue-100 p-5">
-      <h1 className="my-8 bg-red-100 text-2xl font-bold">Llibreria del papa</h1>
+    <div className="flex h-screen w-full flex-col items-center bg-blue-100 p-20">
+      <h1 className="bg-red-100 text-2xl font-bold">Llibreria del papa</h1>
       <button
-        className="rounded bg-green-500 p-2"
+        className="my-5 rounded bg-green-500 p-2"
         onClick={() => setOpenModal(true)}
       >
         Afegeix un nou llibre
       </button>
       {openModal && (
-        <Modal setOpenModal={setOpenModal} addBookState={addBookState} />
+        <Modal
+          setOpenModal={setOpenModal}
+          changeBookState={addBookState}
+          deleteBookState={deleteBookState}
+          bookProp={emptyBook}
+        />
       )}
-      <div>
+      <div className="flex flex-col gap-2">
         {bookList?.map((book) => (
-          <BookInfo key={book.id} book={book} />
+          <BookInfo
+            key={book.id}
+            book={book}
+            editBookState={editBookState}
+            deleteBookState={deleteBookState}
+          />
         ))}
       </div>
     </div>

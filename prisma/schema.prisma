@@ -16,5 +16,6 @@ model book {
   id        String @id @default(cuid())
   titol     String
   autor     String
-  prestatge Int
+  prestatge String
+  notes     String
 }
