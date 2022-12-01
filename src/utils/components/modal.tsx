@@ -149,7 +149,9 @@ function Modal({
             onClick={() =>
               input.id === "" ? createBook(input) : updateBook(input)
             }
-          ></button>
+          >
+            {input.id === "" ? "Create" : "Update"}
+          </button>
         </div>
       </div>
     </div>
