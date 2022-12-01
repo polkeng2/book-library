@@ -22,9 +22,11 @@ const Home: NextPage = () => {
   };
 
   const editBookState = (book: book) => {
-    let idBook = bookList.find((b) => b.id === book.id);
-    idBook = book;
-    setBookList([...bookList, book]);
+    console.log(book);
+    const index = bookList.findIndex((b) => b.id === book.id);
+    const newBookList = [...bookList];
+    newBookList[index] = book;
+    setBookList(newBookList);
   };
 
   const deleteBookState = (book: book) => {
