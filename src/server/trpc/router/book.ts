@@ -1,6 +1,6 @@
-import { router, publicProcedure } from "../trpc";
-import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+import { publicProcedure, router } from "../trpc";
 
 export const bookRouter = router({
   getAllBooks: publicProcedure.query(({ ctx }) => {
@@ -12,6 +12,11 @@ export const bookRouter = router({
         titol: z.string(),
         autor: z.string(),
         prestatge: z.string(),
+        posicio: z.string(),
+        habitacio: z.string(),
+        tipus: z.string(),
+        editorial: z.string(),
+        idioma: z.string(),
         notes: z.string(),
       })
     )
@@ -21,17 +26,27 @@ export const bookRouter = router({
           titol: input.titol,
           autor: input.autor,
           prestatge: input.prestatge,
+          posicio: input.posicio,
+          habitacio: input.habitacio,
+          tipus: input.tipus,
+          editorial: input.editorial,
+          idioma: input.idioma,
           notes: input.notes,
         },
       });
     }),
-    updateBook: publicProcedure
+  updateBook: publicProcedure
     .input(
       z.object({
-        id: z.string(),
+        id: z.number(),
         titol: z.string(),
         autor: z.string(),
         prestatge: z.string(),
+        posicio: z.string(),
+        habitacio: z.string(),
+        tipus: z.string(),
+        editorial: z.string(),
+        idioma: z.string(),
         notes: z.string(),
       })
     )
@@ -44,22 +59,31 @@ export const bookRouter = router({
           titol: input.titol,
           autor: input.autor,
           prestatge: input.prestatge,
+          posicio: input.posicio,
+          habitacio: input.habitacio,
+          tipus: input.tipus,
+          editorial: input.editorial,
+          idioma: input.idioma,
           notes: input.notes,
-        }}
-        )}),
-    deleteBook: publicProcedure
+        },
+      });
+    }),
+  deleteBook: publicProcedure
     .input(
       z.object({
-        id: z.string(),
+        id: z.number(),
       })
     )
     .mutation(({ ctx, input }) => {
-      if (input.id === "") throw new TRPCError({ code: "BAD_REQUEST", message: 'Cannot delete empty entry.', });
+      if (input.id < 0)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Cannot delete empty entry.",
+        });
       return ctx.prisma.book.delete({
         where: {
           id: input.id,
         },
       });
-    }
-  ),
+    }),
 });

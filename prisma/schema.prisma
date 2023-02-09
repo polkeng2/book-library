@@ -3,19 +3,22 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
   provider             = "mysql"
   url                  = env("DATABASE_URL")
-  referentialIntegrity = "prisma"
 }
 
 model book {
-  id        String @id @default(cuid())
+  id        Int @id @default(autoincrement())
   titol     String
   autor     String
   prestatge String
+  posicio   String
+  habitacio String
+  tipus     String
+  editorial String
+  idioma    String
   notes     String
 }

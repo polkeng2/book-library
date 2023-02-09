@@ -1,9 +1,9 @@
-import type { NextPage } from "next";
-import { trpc } from "../utils/trpc";
-import Modal from "../utils/components/modal";
 import { book } from "@prisma/client";
+import type { NextPage } from "next";
 import React from "react";
 import BookInfo from "../utils/components/book";
+import Modal from "../utils/components/modal";
+import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
   const [openModal, setOpenModal] = React.useState<Boolean>(false);
@@ -12,7 +12,6 @@ const Home: NextPage = () => {
     onSuccess: (data) => {
       if (data) {
         setBookList(data);
-        console.log(bookList);
       }
     },
   });
@@ -37,16 +36,21 @@ const Home: NextPage = () => {
   if (isLoading) return <p>Loading...</p>;
 
   const emptyBook: book = {
-    id: "",
+    id: -1,
     titol: "",
     autor: "",
     prestatge: "",
+    posicio: "",
+    habitacio: "",
+    tipus: "",
+    editorial: "",
+    idioma: "",
     notes: "",
   };
 
   return (
     <div className="flex h-screen w-full flex-col items-center bg-blue-100 p-20">
-      <h1 className="bg-red-100 text-2xl font-bold">Llibreria del papa</h1>
+      <h1 className="bg-red-100 text-2xl font-bold">Biblioteca del papa</h1>
       <button
         className="my-5 rounded bg-green-500 p-2"
         onClick={() => setOpenModal(true)}

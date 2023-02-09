@@ -109,15 +109,69 @@ function Modal({
             onChange={handleInput}
           />
         </div>
-        <div className="flex flex-col">
-          <label className="font-bold">Prestatge</label>
-          <input
-            className="rounded border p-1"
-            type="text"
-            name="prestatge"
-            value={input.prestatge}
-            onChange={handleInput}
-          />
+        <div className="flex justify-between">
+          <div className="flex flex-col">
+            <label className="font-bold">Prestatge</label>
+            <input
+              className="rounded border p-1"
+              type="text"
+              name="prestatge"
+              value={input.prestatge}
+              onChange={handleInput}
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="font-bold">Posició</label>
+            <input
+              className="rounded border p-1"
+              type="text"
+              name="posicio"
+              value={input.posicio}
+              onChange={handleInput}
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="font-bold">Habitació</label>
+            <input
+              className="rounded border p-1"
+              type="text"
+              name="habitacio"
+              value={input.habitacio}
+              onChange={handleInput}
+            />
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <div className="flex flex-col">
+            <label className="font-bold">Tipus</label>
+            <input
+              className="rounded border p-1"
+              type="text"
+              name="tipus"
+              value={input.tipus}
+              onChange={handleInput}
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="font-bold">Editorial</label>
+            <input
+              className="rounded border p-1"
+              type="text"
+              name="editorial"
+              value={input.editorial}
+              onChange={handleInput}
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="font-bold">Idioma</label>
+            <input
+              className="rounded border p-1"
+              type="text"
+              name="idioma"
+              value={input.idioma}
+              onChange={handleInput}
+            />
+          </div>
         </div>
         <div className="flex flex-col">
           <label className="font-bold">Notes</label>
@@ -136,7 +190,7 @@ function Modal({
           >
             Cancel
           </button>
-          {bookProp.id !== "" ? (
+          {bookProp.id > -1 ? (
             <button
               className="rounded bg-red-500 py-2 px-3 font-bold text-white hover:bg-red-700"
               onClick={() => deleteBook(input)}
@@ -147,10 +201,10 @@ function Modal({
           <button
             className="rounded bg-purple-500 py-2 px-3 font-bold text-white hover:bg-purple-700"
             onClick={() =>
-              input.id === "" ? createBook(input) : updateBook(input)
+              input.id < 0 ? createBook(input) : updateBook(input)
             }
           >
-            {input.id === "" ? "Create" : "Update"}
+            {input.id < 0 ? "Create" : "Update"}
           </button>
         </div>
       </div>
