@@ -12,12 +12,10 @@ import { trpc } from "../trpc";
 function Modal({
   setOpenModal,
   changeBookState,
-  deleteBookState,
   bookProp,
 }: {
   setOpenModal: (value: boolean) => void;
   changeBookState: (book: book) => void;
-  deleteBookState: (book: book) => void;
   bookProp: book;
 }) {
   const [error, setError] = React.useState<string>("");
@@ -44,22 +42,11 @@ function Modal({
       onError: (error) => setError(error.message),
     });
 
-  const { mutate: deleteBook, isLoading: isDeleting } =
-    trpc.book.deleteBook.useMutation({
-      onSuccess: (data) => {
-        if (!isDeleting && data) {
-          deleteBookState(data);
-          setOpenModal(false);
-        }
-      },
-      onError: (error) => setError(error.message),
-    });
-
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
 
-  //TODO: Show error on input
+  //TODO: existing input, new error
   const handleError = () => {
     if (error) {
       if (input.titol === "" || input.autor === "" || input.prestatge === "") {
@@ -190,14 +177,6 @@ function Modal({
           >
             Cancel
           </button>
-          {bookProp.id > -1 ? (
-            <button
-              className="rounded bg-red-500 py-2 px-3 font-bold text-white hover:bg-red-700"
-              onClick={() => deleteBook(input)}
-            >
-              Delete
-            </button>
-          ) : null}
           <button
             className="rounded bg-purple-500 py-2 px-3 font-bold text-white hover:bg-purple-700"
             onClick={() =>

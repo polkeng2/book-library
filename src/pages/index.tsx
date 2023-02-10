@@ -28,11 +28,6 @@ const Home: NextPage = () => {
     setBookList(newBookList);
   };
 
-  const deleteBookState = (book: book) => {
-    const books = bookList.filter((b) => b.id !== book.id);
-    setBookList(books);
-  };
-
   if (isLoading) return <p>Loading...</p>;
 
   const emptyBook: book = {
@@ -61,7 +56,6 @@ const Home: NextPage = () => {
         <Modal
           setOpenModal={setOpenModal}
           changeBookState={addBookState}
-          deleteBookState={deleteBookState}
           bookProp={emptyBook}
         />
       )}
