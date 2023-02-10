@@ -12,7 +12,6 @@
   "dependencies": {
     "@prisma/client": "^4.10.1",
     "@tanstack/react-query": "^4.10.0",
-    "@tanstack/react-table": "^8.7.9",
     "@trpc/client": "10.0.0-rc.0",
     "@trpc/next": "10.0.0-rc.0",
     "@trpc/react-query": "10.0.0-rc.0",
@@ -20,6 +19,7 @@
     "next": "12.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-table": "^7.8.0",
     "superjson": "1.9.1",
     "zod": "^3.18.0"
   },
@@ -27,6 +27,7 @@
     "@types/node": "18.0.0",
     "@types/react": "18.0.14",
     "@types/react-dom": "18.0.5",
+    "@types/react-table": "^7.7.14",
     "@typescript-eslint/eslint-plugin": "^5.33.0",
     "@typescript-eslint/parser": "^5.33.0",
     "autoprefixer": "^10.4.7",

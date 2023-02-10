@@ -71,7 +71,7 @@ function Modal({
 
   return (
     <div className="absolute inset-0 flex bg-black/75">
-      <div className="m-auto flex w-[30%] flex-col gap-3 rounded bg-white  p-5 ">
+      <div className="m-auto flex flex-col gap-3 rounded bg-white  p-5 ">
         <div className="flex justify-between ">
           <p className="flex items-center text-2xl font-bold">
             Afegeix un nou llibre

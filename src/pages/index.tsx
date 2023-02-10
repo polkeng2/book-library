@@ -1,14 +1,14 @@
 import { book } from "@prisma/client";
 import type { NextPage } from "next";
 import React from "react";
-import BookInfo from "../utils/components/book";
+import BookList from "../utils/components/bookList";
 import Modal from "../utils/components/modal";
 import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
   const [openModal, setOpenModal] = React.useState<Boolean>(false);
   const [bookList, setBookList] = React.useState<book[]>([]);
-  const { isLoading } = trpc.book.getAllBooks.useQuery(undefined, {
+  const { data, isLoading } = trpc.book.getAllBooks.useQuery(undefined, {
     onSuccess: (data) => {
       if (data) {
         setBookList(data);
@@ -65,16 +65,7 @@ const Home: NextPage = () => {
           bookProp={emptyBook}
         />
       )}
-      <div className="flex flex-col gap-2">
-        {bookList?.map((book) => (
-          <BookInfo
-            key={book.id}
-            book={book}
-            editBookState={editBookState}
-            deleteBookState={deleteBookState}
-          />
-        ))}
-      </div>
+      {data ? <BookList bookData={data} /> : null}
     </div>
   );
 };
