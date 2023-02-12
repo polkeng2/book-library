@@ -7,26 +7,7 @@ import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
   const [openModal, setOpenModal] = React.useState<Boolean>(false);
-  const [bookList, setBookList] = React.useState<book[]>([]);
-  const { data, isLoading } = trpc.book.getAllBooks.useQuery(undefined, {
-    onSuccess: (data) => {
-      if (data) {
-        setBookList(data);
-      }
-    },
-  });
-
-  const addBookState = (book: book) => {
-    setBookList([...bookList, book]);
-  };
-
-  const editBookState = (book: book) => {
-    console.log(book);
-    const index = bookList.findIndex((b) => b.id === book.id);
-    const newBookList = [...bookList];
-    newBookList[index] = book;
-    setBookList(newBookList);
-  };
+  const { data, isLoading, refetch } = trpc.book.getAllBooks.useQuery();
 
   if (isLoading) return <p>Loading...</p>;
 
@@ -54,12 +35,12 @@ const Home: NextPage = () => {
       </button>
       {openModal && (
         <Modal
+          refetch={refetch}
           setOpenModal={setOpenModal}
-          changeBookState={addBookState}
           bookProp={emptyBook}
         />
       )}
-      {data ? <BookList bookData={data} /> : null}
+      {data ? <BookList bookData={data} refetch={refetch} /> : null}
     </div>
   );
 };

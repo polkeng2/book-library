@@ -1,10 +1,30 @@
 import { book } from "@prisma/client";
 import React from "react";
-import { Column, Row, useSortBy, useTable } from "react-table";
+import {
+  Column,
+  HeaderGroup,
+  useGlobalFilter,
+  useSortBy,
+  useTable,
+} from "react-table";
+import { trpc } from "../trpc";
 
-const BookList = ({ bookData }: { bookData: book[] }) => {
+const BookList = ({
+  bookData,
+  refetch,
+}: {
+  bookData: book[];
+  refetch: () => void;
+}) => {
+  const { mutate: deleteBook, isLoading } = trpc.book.deleteBook.useMutation({
+    onSuccess: (data) => {
+      if (!isLoading && data) {
+        refetch();
+      }
+    },
+  });
   const data = React.useMemo(() => bookData, [bookData]);
-  const columns = React.useMemo<Column<book>[]>(
+  const columns = React.useMemo<Column<any>[]>(
     () => [
       {
         Header: "Títol",
@@ -42,40 +62,46 @@ const BookList = ({ bookData }: { bookData: book[] }) => {
         Header: "Notes",
         accessor: "notes",
       },
+      {
+        Header: "Delete",
+        accessor: "id",
+        Cell: ({ cell }) => (
+          <button
+            value={cell.row.values.name}
+            onClick={() => deleteBook(cell.row.values.id)}
+          >
+            Delete button with id
+          </button>
+        ),
+      },
     ],
     []
   );
-  const tableHooks = (hooks: any) => {
-    hooks.visibleColumns.push((columns: Column[]) => {
-      return [
-        ...columns,
-        {
-          id: "Delete",
-          Header: "Delete",
-          Cell: (row: Row) => (
-            <button onClick={() => alert("xd")}>Delete</button>
-          ),
-        },
-      ];
-    });
-  };
 
-  const table = useTable({ columns, data }, useSortBy, tableHooks);
+  const {
+    getTableProps,
+    headerGroups,
+    getTableBodyProps,
+    rows,
+    prepareRow,
+    state,
+  } = useTable({ columns, data }, useGlobalFilter, useSortBy);
 
   return (
     <div>
       <table
         className="table-auto border-collapse border border-slate-500"
-        {...table.getTableProps()}
+        {...getTableProps()}
       >
         <thead>
-          {table.headerGroups.map((headerGroup: any) => (
+          {headerGroups.map((headerGroup: HeaderGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column: any) => (
                 <th
                   className="border border-slate-500 bg-neutral-300 px-2"
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                 >
+                  {column.canFilter ? column.render("Filter") : null}
                   <div className="whitespace-nowrap">
                     {column.render("Header")}
                     {column.isSorted ? (column.isSortedDesc ? " ▾" : " ▴") : ""}
@@ -85,13 +111,12 @@ const BookList = ({ bookData }: { bookData: book[] }) => {
             </tr>
           ))}
         </thead>
-        <tbody {...table.getTableBodyProps()}>
-          {table.rows.map((row) => {
-            table.prepareRow(row);
+        <tbody {...getTableBodyProps()}>
+          {rows.map((row) => {
+            prepareRow(row);
             return (
               <tr className="px-2 py-1" {...row.getRowProps()}>
                 {row.cells.map((cell) => {
-                  table.prepareRow(row);
                   return (
                     <td
                       className="overflow-hidden overflow-ellipsis border border-slate-500 bg-neutral-100 px-2"

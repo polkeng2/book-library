@@ -68,22 +68,16 @@ export const bookRouter = router({
         },
       });
     }),
-  deleteBook: publicProcedure
-    .input(
-      z.object({
-        id: z.number(),
-      })
-    )
-    .mutation(({ ctx, input }) => {
-      if (input.id < 0)
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Cannot delete empty entry.",
-        });
-      return ctx.prisma.book.delete({
-        where: {
-          id: input.id,
-        },
+  deleteBook: publicProcedure.input(z.number()).mutation(({ ctx, input }) => {
+    if (input < 0)
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Cannot delete empty entry.",
       });
-    }),
+    return ctx.prisma.book.delete({
+      where: {
+        id: input,
+      },
+    });
+  }),
 });

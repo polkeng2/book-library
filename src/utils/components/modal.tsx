@@ -10,12 +10,12 @@ import { trpc } from "../trpc";
 } */
 
 function Modal({
+  refetch,
   setOpenModal,
-  changeBookState,
   bookProp,
 }: {
+  refetch: () => void;
   setOpenModal: (value: boolean) => void;
-  changeBookState: (book: book) => void;
   bookProp: book;
 }) {
   const [error, setError] = React.useState<string>("");
@@ -24,7 +24,7 @@ function Modal({
   const { mutate: createBook, isLoading } = trpc.book.insertBook.useMutation({
     onSuccess: (data) => {
       if (!isLoading && data) {
-        changeBookState(data);
+        refetch();
         setOpenModal(false);
       }
     },
@@ -35,7 +35,7 @@ function Modal({
     trpc.book.updateBook.useMutation({
       onSuccess: (data) => {
         if (!isUpdating && data) {
-          changeBookState(data);
+          refetch();
           setOpenModal(false);
         }
       },
