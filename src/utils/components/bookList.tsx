@@ -3,12 +3,12 @@ import React from "react";
 import {
   Column,
   HeaderGroup,
-  useGlobalFilter,
+  useFilters,
   useSortBy,
   useTable,
 } from "react-table";
 import { trpc } from "../trpc";
-
+import DefaultColumnFilter from "./defaultFilter";
 const BookList = ({
   bookData,
   refetch,
@@ -35,10 +35,12 @@ const BookList = ({
         accessor: "autor",
       },
       {
+        width: "0.5rem",
         Header: "Prestatge",
         accessor: "prestatge",
       },
       {
+        width: "0.5rem",
         Header: "Posició",
         accessor: "posicio",
       },
@@ -63,14 +65,15 @@ const BookList = ({
         accessor: "notes",
       },
       {
-        Header: "Delete",
+        Header: "Editar",
         accessor: "id",
         Cell: ({ cell }) => (
           <button
+            className="rounded bg-green-500 p-2"
             value={cell.row.values.name}
             onClick={() => deleteBook(cell.row.values.id)}
           >
-            Delete button with id
+            Editar entrada
           </button>
         ),
       },
@@ -78,14 +81,17 @@ const BookList = ({
     []
   );
 
-  const {
-    getTableProps,
-    headerGroups,
-    getTableBodyProps,
-    rows,
-    prepareRow,
-    state,
-  } = useTable({ columns, data }, useGlobalFilter, useSortBy);
+  const defaultColumn: any = React.useMemo(
+    // TODO: fix any
+    () => ({
+      // Let's set up our default Filter UI
+      Filter: DefaultColumnFilter,
+    }),
+    []
+  );
+
+  const { getTableProps, headerGroups, getTableBodyProps, rows, prepareRow } =
+    useTable({ columns, data, defaultColumn }, useFilters, useSortBy);
 
   return (
     <div>
@@ -101,11 +107,11 @@ const BookList = ({
                   className="border border-slate-500 bg-neutral-300 px-2"
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                 >
-                  {column.canFilter ? column.render("Filter") : null}
                   <div className="whitespace-nowrap">
                     {column.render("Header")}
                     {column.isSorted ? (column.isSortedDesc ? " ▾" : " ▴") : ""}
                   </div>
+                  {column.canFilter ? column.render("Filter") : null}
                 </th>
               ))}
             </tr>
@@ -120,7 +126,12 @@ const BookList = ({
                   return (
                     <td
                       className="overflow-hidden overflow-ellipsis border border-slate-500 bg-neutral-100 px-2"
-                      {...cell.getCellProps()}
+                      {...cell.getCellProps({
+                        style: {
+                          width: cell.column.width,
+                          textAlign: "center",
+                        },
+                      })}
                     >
                       {cell.render("Cell")}
                     </td>
